@@ -153,4 +153,22 @@ class CustomerControllerIT extends IntegrationTest {
                 ).andExpectAll(MockMvcResultMatchers.status().isNotFound())
                 .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
     }
+
+    @Test
+    void deleteCustomer_returns_204() throws Exception {
+        String customerLocation = (String) mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")))
+                .andReturn().getResponse().getHeaderValue("location");
+
+        assert customerLocation != null;
+        mockMvc.perform(MockMvcRequestBuilders.delete(customerLocation)
+                        .contentType(MediaType.APPLICATION_JSON)
+
+                ).andExpectAll(MockMvcResultMatchers.status().isNoContent())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
 }

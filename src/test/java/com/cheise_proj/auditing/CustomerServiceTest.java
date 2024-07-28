@@ -179,4 +179,10 @@ class CustomerServiceTest {
         assertEquals("Customer with id 1 not found", exception.getMessage());
     }
 
+    @Test
+    void deleteCustomer() {
+        Mockito.doNothing().when(customerRepository).deleteById(ArgumentMatchers.anyLong());
+        sut.deleteCustomer(1L);
+        Mockito.verify(customerRepository, Mockito.atMostOnce()).deleteById(ArgumentMatchers.anyLong());
+    }
 }
