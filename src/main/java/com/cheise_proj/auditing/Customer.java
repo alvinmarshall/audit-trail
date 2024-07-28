@@ -33,23 +33,21 @@ class Customer {
     private String emailAddress;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "customer", orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses;
 
     static Customer of(CustomerDto.CreateCustomer customer) {
-        Customer customerEntity = Customer.builder()
+        return Customer.builder()
                 .firstName(customer.firstName())
                 .lastName(customer.lastName())
                 .emailAddress(customer.emailAddress())
                 .build();
-        customerEntity.setAddresses(customer.customerAddress());
-        return customerEntity;
     }
 
-    void setAddresses(Set<CustomerDto.CustomerAddress> customerAddresses) {
+    void setAddresses(Set<CustomerDto.CustomerAddress> customerAddresses, Customer customer) {
         if (customerAddresses == null) return;
         this.addresses = (this.addresses == null) ? new LinkedHashSet<>() : this.addresses;
-        Set<Address> addressSet = customerAddresses.stream().map(Address::of).collect(Collectors.toSet());
+        Set<Address> addressSet = customerAddresses.stream().map(customerAddress -> Address.of(customerAddress, customer)).collect(Collectors.toSet());
         this.addresses.addAll(addressSet);
     }
 }

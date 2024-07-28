@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 interface CustomerDto {
     @Builder
@@ -13,7 +14,7 @@ interface CustomerDto {
             @NotBlank @JsonProperty String firstName,
             @NotBlank @JsonProperty String lastName,
             @Email @JsonProperty("email") String emailAddress,
-            Set<CustomerAddress> customerAddress
+            @JsonProperty Set<CustomerAddress> customerAddress
     ) implements CustomerDto {
     }
 
@@ -25,5 +26,33 @@ interface CustomerDto {
             @JsonProperty String country,
             @JsonProperty String zipCode
     ) {
+    }
+
+    @Builder
+    record GetCustomer(
+            @JsonProperty String firstName,
+            @JsonProperty String lastName,
+            @JsonProperty("email") String emailAddress,
+            Set<CustomerAddress> customerAddress
+    ) implements CustomerDto {
+    }
+
+    static GetCustomer toGetCustomer(Customer customer) {
+        Set<CustomerAddress> customerAddresses = null;
+        if (customer.getAddresses() != null) {
+            customerAddresses = customer.getAddresses().stream().map(address -> CustomerAddress.builder()
+                    .zipCode(address.getZipCode())
+                    .city(address.getCity())
+                    .country(address.getCountry())
+                    .stateCode(address.getStateCode())
+                    .streetAddress(address.getStreetAddress())
+                    .build()).collect(Collectors.toSet());
+        }
+        return GetCustomer.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .emailAddress(customer.getEmailAddress())
+                .customerAddress(customerAddresses)
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.cheise_proj.auditing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,17 +25,23 @@ class Address {
     @Column(name = "zip_code")
     private String zipCode;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
+    @ToString.Exclude
     private Customer customer;
 
-    static Address of(CustomerDto.CustomerAddress customerAddress) {
+    @Column(name = "customer_id", insertable = false, updatable = false)
+    private Long customerId;
+
+    static Address of(CustomerDto.CustomerAddress customerAddress, Customer customer) {
         return Address.builder()
                 .city(customerAddress.city())
                 .streetAddress(customerAddress.streetAddress())
                 .stateCode(customerAddress.stateCode())
                 .country(customerAddress.country())
                 .zipCode(customerAddress.zipCode())
+                .customer(customer)
                 .build();
     }
 
