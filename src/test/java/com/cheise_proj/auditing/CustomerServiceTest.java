@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -41,5 +43,26 @@ class CustomerServiceTest {
         assertEquals("Claribel", customer.getFirstName());
         assertEquals("Zieme", customer.getLastName());
         assertEquals("claribel.zieme@gmail.com", customer.getEmailAddress());
+    }
+
+    @Test
+    void createCustomerWithAddress() {
+        CustomerDto.CreateCustomer customerDto = CustomerDto.CreateCustomer.builder()
+                .firstName("Claribel")
+                .lastName("Zieme")
+                .emailAddress("claribel.zieme@gmail.com")
+                .customerAddress(Set.of(CustomerDto.CustomerAddress.builder()
+                                .city("Risaberg")
+                                .country("USA")
+                                .streetAddress("942 Walker Street")
+                                .stateCode("WV")
+                                .zipCode("88742")
+                        .build()))
+                .build();
+        sut.createCustomer(customerDto);
+        Mockito.verify(customerRepository,Mockito.atMostOnce()).save(customerArgumentCaptor.capture());
+        Customer customer = customerArgumentCaptor.getValue();
+        assertNotNull(customer);
+        assertEquals(1,customer.getAddresses().size());
     }
 }

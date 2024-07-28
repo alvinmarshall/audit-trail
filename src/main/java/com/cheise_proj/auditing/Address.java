@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +23,19 @@ class Address {
     private String country;
     @Column(name = "zip_code")
     private String zipCode;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    static Address of(CustomerDto.CustomerAddress customerAddress) {
+        return Address.builder()
+                .city(customerAddress.city())
+                .streetAddress(customerAddress.streetAddress())
+                .stateCode(customerAddress.stateCode())
+                .country(customerAddress.country())
+                .zipCode(customerAddress.zipCode())
+                .build();
+    }
+
 }

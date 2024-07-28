@@ -38,6 +38,16 @@ class CustomerControllerIT extends IntegrationTest {
     }
 
     @Test
+    void createCustomer_With_Address_returns_201() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")));
+    }
+
+    @Test
     void createCustomer_returns_400() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
