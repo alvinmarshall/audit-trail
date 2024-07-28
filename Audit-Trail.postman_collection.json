@@ -1,0 +1,377 @@
+{
+	"info": {
+		"_postman_id": "1d139ff6-45a4-4e02-96b1-7c424ea30b78",
+		"name": "Audit-Trail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4492329"
+	},
+	"item": [
+		{
+			"name": "Add Customer",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Add Customer",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"firstName\": \"Troy\",\n    \"lastName\": \"Hahn\",\n    \"email\": \"troy.hahn@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Location",
+							"value": "/customers/1"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 21:56:40 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get Revisions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/customers/1/revisions",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers",
+						"1",
+						"revisions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Revisions",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1/revisions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"revisions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 22:04:49 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"revision\": {\n            \"id\": 1,\n            \"date\": \"2024-07-28T21:56:40.713+00:00\",\n            \"userName\": \"System\"\n        }\n    }\n]"
+				},
+				{
+					"name": "Get Revisions",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1/revisions",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"revisions"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 22:09:59 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"revision\": {\n            \"id\": 1,\n            \"date\": \"2024-07-28T21:56:40.713+00:00\",\n            \"userName\": \"System\"\n        }\n    },\n    {\n        \"revision\": {\n            \"id\": 2,\n            \"date\": \"2024-07-28T22:08:06.171+00:00\",\n            \"userName\": \"System\"\n        }\n    }\n]"
+				},
+				{
+					"name": "Get Revisions With Changes",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1/revisions?fetch=true",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1",
+								"revisions"
+							],
+							"query": [
+								{
+									"key": "fetch",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 22:10:28 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"revisionType\": \"ADD\",\n        \"changes\": [],\n        \"entity\": {\n            \"id\": 1,\n            \"firstName\": \"Troy\",\n            \"lastName\": \"Hahn\",\n            \"emailAddress\": \"troy.hahn@gmail.com\",\n            \"addresses\": [],\n            \"createdBy\": \"System\",\n            \"updatedBy\": \"System\",\n            \"createdOn\": \"2024-07-28T21:56:40.693+00:00\",\n            \"updatedOn\": \"2024-07-28T21:56:40.693+00:00\"\n        },\n        \"revision\": {\n            \"id\": 1,\n            \"date\": \"2024-07-28T21:56:40.713+00:00\",\n            \"userName\": \"System\"\n        }\n    },\n    {\n        \"revisionType\": \"MOD\",\n        \"changes\": [\n            \"firstName\",\n            \"lastName\",\n            \"addresses\",\n            \"emailAddress\",\n            \"updatedOn\"\n        ],\n        \"entity\": {\n            \"id\": 1,\n            \"firstName\": \"Theresia\",\n            \"lastName\": \"Macejkovic\",\n            \"emailAddress\": \"thres.mac@gmail.com\",\n            \"addresses\": [\n                {\n                    \"id\": 1,\n                    \"streetAddress\": \"942 Walker Street\",\n                    \"city\": \"Risaberg\",\n                    \"stateCode\": \"WV\",\n                    \"country\": \"USA\",\n                    \"zipCode\": \"88742\",\n                    \"customerId\": 1\n                }\n            ],\n            \"createdBy\": \"System\",\n            \"updatedBy\": \"System\",\n            \"createdOn\": \"2024-07-28T21:56:40.693+00:00\",\n            \"updatedOn\": \"2024-07-28T22:08:06.165+00:00\"\n        },\n        \"revision\": {\n            \"id\": 2,\n            \"date\": \"2024-07-28T22:08:06.171+00:00\",\n            \"userName\": \"System\"\n        }\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Update Customer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n      \"firstName\": \"Theresia\",\n      \"lastName\": \"Macejkovic\",\n      \"email\": \"thres.mac@gmail.com\",\n      \"customerAddress\": [\n        {\n          \"streetAddress\": \"942 Walker Street\",\n          \"city\": \"Risaberg\",\n          \"stateCode\": \"WV\",\n          \"country\": \"USA\",\n          \"zipCode\": \"88742\"\n        }\n      ]\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/customers/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Customer",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n      \"firstName\": \"Theresia\",\n      \"lastName\": \"Macejkovic\",\n      \"email\": \"thres.mac@gmail.com\",\n      \"customerAddress\": [\n        {\n          \"streetAddress\": \"942 Walker Street\",\n          \"city\": \"Risaberg\",\n          \"stateCode\": \"WV\",\n          \"country\": \"USA\",\n          \"zipCode\": \"88742\"\n        }\n      ]\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/customers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 22:08:06 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"firstName\": \"Theresia\",\n    \"lastName\": \"Macejkovic\",\n    \"customerAddress\": null,\n    \"email\": \"thres.mac@gmail.com\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete Customer",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/customers/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete Customer",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/customers/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jul 2024 22:12:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	]
+}
