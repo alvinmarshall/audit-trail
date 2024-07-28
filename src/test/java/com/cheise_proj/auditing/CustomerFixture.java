@@ -33,4 +33,29 @@ class CustomerFixture {
                 .build();
         return mapper.writeValueAsString(customerDto);
     }
+
+    static String updateCustomer(ObjectMapper mapper) throws JsonProcessingException {
+        CustomerDto.CreateCustomer customerDto = CustomerDto.CreateCustomer.builder()
+                .firstName("Theresia")
+                .lastName("Macejkovic")
+                .emailAddress("thres.mac@gmail.com")
+                .build();
+        return mapper.writeValueAsString(customerDto);
+    }
+
+    static String updateCustomerWithAddress(ObjectMapper mapper) throws JsonProcessingException {
+        CustomerDto.CreateCustomer customerDto = CustomerDto.CreateCustomer.builder()
+                .firstName("Vito")
+                .lastName("Kovacek")
+                .emailAddress("vito.kov.hahn@gmail.com")
+                .customerAddress(Set.of(CustomerDto.CustomerAddress.builder()
+                        .city("Phillipshire")
+                        .country("USA")
+                        .streetAddress("68578 Champlin Mill")
+                        .stateCode("NJ")
+                        .zipCode("28711")
+                        .build()))
+                .build();
+        return mapper.writeValueAsString(customerDto);
+    }
 }

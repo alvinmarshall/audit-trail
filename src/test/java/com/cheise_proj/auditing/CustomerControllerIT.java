@@ -98,4 +98,59 @@ class CustomerControllerIT extends IntegrationTest {
                 ).andExpectAll(MockMvcResultMatchers.status().isNotFound())
                 .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
     }
+
+    @Test
+    void updateCustomer_returns_200() throws Exception {
+        String customerLocation = (String) mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")))
+                .andReturn().getResponse().getHeaderValue("location");
+
+        assert customerLocation != null;
+        mockMvc.perform(MockMvcRequestBuilders.put(customerLocation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.updateCustomer(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void updateCustomer_With_Address_returns_200() throws Exception {
+        String customerLocation = (String) mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")))
+                .andReturn().getResponse().getHeaderValue("location");
+
+        assert customerLocation != null;
+        mockMvc.perform(MockMvcRequestBuilders.put(customerLocation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.updateCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void updateCustomer_returns_404() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/customers/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.updateCustomer(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isNotFound())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
 }

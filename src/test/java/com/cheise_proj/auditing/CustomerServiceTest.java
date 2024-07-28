@@ -100,4 +100,83 @@ class CustomerServiceTest {
         );
         assertEquals("Customer with id 1 not found", exception.getMessage());
     }
+
+    @Test
+    void updateCustomer() {
+        CustomerDto.UpdateCustomer updateCustomerDto = CustomerDto.UpdateCustomer.builder()
+                .firstName("Update Claribel")
+                .lastName("Update Zieme")
+                .emailAddress("Update claribel.zieme@gmail.com")
+                .build();
+
+        Mockito.when(customerRepository.findByIdWithAddress(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(Customer.builder().id(1L)
+                        .firstName("Claribel")
+                        .lastName("Zieme")
+                        .emailAddress("claribel.zieme@gmail.com")
+                        .build()));
+
+        sut.updateCustomer(1L, updateCustomerDto);
+        Mockito.verify(customerRepository, Mockito.atMostOnce()).save(customerArgumentCaptor.capture());
+        Customer customer = customerArgumentCaptor.getValue();
+        assertNotNull(customer);
+        assertEquals("Update Claribel", customer.getFirstName());
+        assertEquals("Update Zieme", customer.getLastName());
+        assertEquals("Update claribel.zieme@gmail.com", customer.getEmailAddress());
+    }
+
+    @Test
+    void updateCustomerWithAddress() {
+        CustomerDto.UpdateCustomer updateCustomerDto = CustomerDto.UpdateCustomer.builder()
+                .firstName("Update Claribel")
+                .lastName("Update Zieme")
+                .emailAddress("Update claribel.zieme@gmail.com")
+                .customerAddress(Set.of(CustomerDto.CustomerAddress.builder()
+                        .city("Emmerichmouth")
+                        .country("USA")
+                        .streetAddress("Suite 290 6898 King Village")
+                        .stateCode("PA")
+                        .zipCode("29665")
+                        .build()))
+                .build();
+
+        Mockito.when(customerRepository.findByIdWithAddress(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(Customer.builder().id(1L)
+                        .firstName("Claribel")
+                        .lastName("Zieme")
+                        .emailAddress("claribel.zieme@gmail.com")
+                        .addresses(Set.of(Address.builder()
+                                .city("Risaberg")
+                                .country("USA")
+                                .streetAddress("942 Walker Street")
+                                .stateCode("WV")
+                                .zipCode("88742")
+                                .build()))
+                        .build()));
+
+        sut.updateCustomer(1L, updateCustomerDto);
+        Mockito.verify(customerRepository, Mockito.atMostOnce()).save(customerArgumentCaptor.capture());
+        Customer customer = customerArgumentCaptor.getValue();
+        assertNotNull(customer);
+        assertEquals("Update Claribel", customer.getFirstName());
+        assertEquals("Update Zieme", customer.getLastName());
+        assertEquals("Update claribel.zieme@gmail.com", customer.getEmailAddress());
+        assertEquals(2, customer.getAddresses().size());
+    }
+
+    @Test
+    void updateCustomer_throw_if_customer_not_found() {
+        CustomerDto.UpdateCustomer updateCustomerDto = CustomerDto.UpdateCustomer.builder()
+                .firstName("Update Claribel")
+                .lastName("Update Zieme")
+                .emailAddress("Update claribel.zieme@gmail.com")
+                .build();
+
+        EntityNotFoundException exception = Assertions.assertThrows(
+                EntityNotFoundException.class,
+                () -> sut.updateCustomer(1L, updateCustomerDto)
+        );
+        assertEquals("Customer with id 1 not found", exception.getMessage());
+    }
+
 }
