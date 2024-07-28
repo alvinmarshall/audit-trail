@@ -44,9 +44,17 @@ class Customer {
                 .build();
     }
 
+    static Customer of(CustomerDto.UpdateCustomer customer) {
+        return Customer.builder()
+                .firstName(customer.firstName())
+                .lastName(customer.lastName())
+                .emailAddress(customer.emailAddress())
+                .build();
+    }
+
     void setAddresses(Set<CustomerDto.CustomerAddress> customerAddresses, Customer customer) {
         if (customerAddresses == null) return;
-        this.addresses = (this.addresses == null) ? new LinkedHashSet<>() : this.addresses;
+        this.addresses = (this.addresses == null) ? new LinkedHashSet<>() : new LinkedHashSet<>(this.addresses);
         Set<Address> addressSet = customerAddresses.stream().map(customerAddress -> Address.of(customerAddress, customer)).collect(Collectors.toSet());
         this.addresses.addAll(addressSet);
     }

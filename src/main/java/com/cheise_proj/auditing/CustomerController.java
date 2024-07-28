@@ -44,4 +44,10 @@ class CustomerController {
         return ResponseEntity.ok(CustomerDto.toCustomer(customer));
     }
 
+    @PutMapping("{id}")
+    ResponseEntity<Object> updateCustomer(@PathVariable("id") Long id, @RequestBody @Valid CustomerDto.UpdateCustomer input) {
+        Customer customer = customerService.updateCustomer(id, input);
+        return ResponseEntity.ok(CustomerDto.toCustomer(customer));
+    }
+
 }

@@ -37,6 +37,15 @@ interface CustomerDto {
     ) implements CustomerDto {
     }
 
+    @Builder
+    record UpdateCustomer(
+            @NotBlank @JsonProperty String firstName,
+            @NotBlank @JsonProperty String lastName,
+            @Email @JsonProperty("email") String emailAddress,
+            @JsonProperty Set<CustomerAddress> customerAddress
+    ) implements CustomerDto {
+    }
+
     static GetCustomer toGetCustomer(Customer customer) {
         Set<CustomerAddress> customerAddresses = null;
         if (customer.getAddresses() != null) {
@@ -55,6 +64,7 @@ interface CustomerDto {
                 .customerAddress(customerAddresses)
                 .build();
     }
+
     static GetCustomer toCustomer(Customer customer) {
         return GetCustomer.builder()
                 .firstName(customer.getFirstName())

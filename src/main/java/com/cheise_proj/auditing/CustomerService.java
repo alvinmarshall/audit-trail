@@ -23,9 +23,24 @@ class CustomerService {
         return customerRepository.findAll(pageable);
     }
 
-    public Customer getCustomer(Long id) {
+    Customer getCustomer(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Customer with id %d not found".formatted(id)));
+    }
+
+    Customer getCustomerWithAddress(Long id) {
+        return customerRepository.findByIdWithAddress(id)
+                .orElseThrow(() -> new EntityNotFoundException("Customer with id %d not found".formatted(id)));
+    }
+
+    Customer updateCustomer(Long customerId, CustomerDto.UpdateCustomer updateCustomer) {
+        Customer customer = getCustomerWithAddress(customerId);
+        Customer newCustomer = Customer.of(updateCustomer);
+        customer.setFirstName(newCustomer.getFirstName());
+        customer.setLastName(newCustomer.getLastName());
+        customer.setEmailAddress(newCustomer.getEmailAddress());
+        customer.setAddresses(updateCustomer.customerAddress(), customer);
+        return customerRepository.save(customer);
     }
 
 }
