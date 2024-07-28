@@ -6,5 +6,9 @@ CREATE TABLE customer_address
     state_code     VARCHAR(255),
     country        VARCHAR(255),
     zip_code       VARCHAR(255),
+    customer_id    BIGINT,
     CONSTRAINT pk_customer_address PRIMARY KEY (id)
 );
+
+ALTER TABLE customer_address
+    ADD CONSTRAINT FK_CUSTOMER_ADDRESS_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customers (id);
