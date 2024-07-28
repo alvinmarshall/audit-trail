@@ -91,7 +91,7 @@ Response 200
 
 ## Get Customer Revision with changes
 ```bash
-curl --location 'localhost:8080/customers/1/revisions'
+curl --location 'localhost:8080/customers/1/revisions?fetch=true'
 ```
 Response 200
 ```json
