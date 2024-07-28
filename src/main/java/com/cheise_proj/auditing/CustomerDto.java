@@ -55,4 +55,11 @@ interface CustomerDto {
                 .customerAddress(customerAddresses)
                 .build();
     }
+    static GetCustomer toCustomer(Customer customer) {
+        return GetCustomer.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .emailAddress(customer.getEmailAddress())
+                .build();
+    }
 }

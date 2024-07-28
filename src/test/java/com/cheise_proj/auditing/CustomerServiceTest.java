@@ -1,6 +1,8 @@
 package com.cheise_proj.auditing;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,5 +82,22 @@ class CustomerServiceTest {
         assertNotNull(customerPage);
         assertEquals(1, customerPage.getTotalElements());
         assertEquals(1, customerPage.getContent().size());
+    }
+
+    @Test
+    void getCustomer() {
+        Mockito.when(customerRepository.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(Optional.of(Customer.builder().id(1L).build()));
+        Customer customer = sut.getCustomer(1L);
+        assertNotNull(customer);
+    }
+
+    @Test
+    void getCustomer_throw_if_customer_not_found() {
+        EntityNotFoundException exception = Assertions.assertThrows(
+                EntityNotFoundException.class,
+                () -> sut.getCustomer(1L)
+        );
+        assertEquals("Customer with id 1 not found", exception.getMessage());
     }
 }

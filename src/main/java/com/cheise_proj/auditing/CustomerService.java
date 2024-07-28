@@ -1,5 +1,6 @@
 package com.cheise_proj.auditing;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,4 +22,10 @@ class CustomerService {
     Page<Customer> getCustomers(Pageable pageable) {
         return customerRepository.findAll(pageable);
     }
+
+    public Customer getCustomer(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Customer with id %d not found".formatted(id)));
+    }
+
 }

@@ -38,5 +38,10 @@ class CustomerController {
         return ResponseEntity.ok(customers);
     }
 
+    @GetMapping("{id}")
+    ResponseEntity<Object> getCustomer(@PathVariable("id") Long id) {
+        Customer customer = customerService.getCustomer(id);
+        return ResponseEntity.ok(CustomerDto.toCustomer(customer));
+    }
 
 }
