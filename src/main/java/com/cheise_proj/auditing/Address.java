@@ -3,6 +3,8 @@ package com.cheise_proj.auditing;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "customer_address")
@@ -12,6 +14,8 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
+@AuditTable(value = "customer_address_audit")
+@Audited
 class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,6 +1,11 @@
 package com.cheise_proj.auditing;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.AuditQueryCreator;
+import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +28,12 @@ class CustomerServiceTest {
     private CustomerService sut;
     @Mock
     private CustomerRepository customerRepository;
+    @Mock
+    private AuditReader auditReader;
+    @Mock
+    private AuditQuery auditQuery;
+    @Mock
+    private AuditQueryCreator auditQueryCreator;
     @Captor
     private ArgumentCaptor<Customer> customerArgumentCaptor;
 
@@ -184,5 +193,49 @@ class CustomerServiceTest {
         Mockito.doNothing().when(customerRepository).deleteById(ArgumentMatchers.anyLong());
         sut.deleteCustomer(1L);
         Mockito.verify(customerRepository, Mockito.atMostOnce()).deleteById(ArgumentMatchers.anyLong());
+    }
+
+    @Test
+    void testGetRevisionsWithoutChanges() {
+        Long customerId = 1L;
+        boolean fetchChanges = false;
+
+        Mockito.when(auditReader.createQuery()).thenReturn(auditQueryCreator);
+        Mockito.when(auditReader.createQuery().forRevisionsOfEntity(Customer.class, true)).thenReturn(auditQuery);
+        Mockito.when(auditQuery.add(ArgumentMatchers.any(AuditCriterion.class))).thenReturn(auditQuery);
+        AuditRevisionEntity revision = AuditRevisionEntity.builder().userName("Test").date(new Date()).build();
+        List<Object> mockResults = List.of(revision, revision);
+        Mockito.when(auditQuery.getResultList()).thenReturn(mockResults);
+
+        List<Map<String, Object>> revisions = sut.getRevisions(customerId, fetchChanges);
+
+        assertEquals(2, revisions.size());
+        assertNotNull(revisions.getFirst().get("revision"));
+    }
+
+    @Test
+    void testGetRevisionsWithChanges() {
+        Long customerId = 1L;
+        boolean fetchChanges = true;
+
+        Mockito.when(auditReader.createQuery()).thenReturn(auditQueryCreator);
+        Mockito.when(auditReader.createQuery().forRevisionsOfEntityWithChanges(Customer.class, true)).thenReturn(auditQuery);
+        Mockito.when(auditQuery.add(ArgumentMatchers.any(AuditCriterion.class))).thenReturn(auditQuery);
+        Customer customerRev1 = Customer.builder().id(1L).firstName("Troy").lastName("Hahn").emailAddress("troy.hahn@gmail.com").build();
+        Customer customerRev2 = Customer.builder().id(1L).firstName("Theresia").lastName("Macejkovic").emailAddress("thres.mac@gmail.com").build();
+        Set<String> changes = Set.of("firstName", "lastName", "emailAddress");
+        Object[] revision1 = new Object[]{customerRev1, AuditRevisionEntity.builder().userName("Test").build(), RevisionType.ADD};
+        Object[] revision2 = new Object[]{customerRev2, AuditRevisionEntity.builder().userName("Test").build(), RevisionType.MOD, changes};
+        List<Object> mockResults = List.of(revision1, revision2);
+
+        Mockito.when(auditQuery.getResultList()).thenReturn(mockResults);
+
+        List<Map<String, Object>> revisions = sut.getRevisions(customerId, fetchChanges);
+
+        assertEquals(2, revisions.size());
+        assertNotNull(revisions.getLast().get("entity"));
+        assertNotNull(revisions.getLast().get("revision"));
+        assertEquals(RevisionType.MOD, revisions.getLast().get("revisionType"));
+        assertEquals(changes, revisions.getLast().get("changes"));
     }
 }

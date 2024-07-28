@@ -56,4 +56,12 @@ class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(path = "/{id}/revisions")
+    ResponseEntity<List<Map<String, Object>>> getRevisions(
+            @PathVariable(name = "id") String customerId,
+            @RequestParam(required = false, defaultValue = "false") boolean fetch
+    ) {
+        List<Map<String, Object>> results = customerService.getRevisions(Long.valueOf(customerId), fetch);
+        return ResponseEntity.ok(results);
+    }
 }
