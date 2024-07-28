@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:12-alpine'
+    environment:
+      - 'POSTGRES_DB=audit'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5432'
