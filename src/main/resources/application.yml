@@ -1,4 +1,5 @@
 spring:
   application:
     name: auditing
-
+  jpa:
+    open-in-view: false
