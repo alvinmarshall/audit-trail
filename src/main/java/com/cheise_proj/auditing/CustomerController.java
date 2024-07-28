@@ -50,4 +50,10 @@ class CustomerController {
         return ResponseEntity.ok(CustomerDto.toCustomer(customer));
     }
 
+    @DeleteMapping("{id}")
+    ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
