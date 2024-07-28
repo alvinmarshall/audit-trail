@@ -171,4 +171,61 @@ class CustomerControllerIT extends IntegrationTest {
                 ).andExpectAll(MockMvcResultMatchers.status().isNoContent())
                 .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
     }
+
+    @Test
+    void Customer_revisions_without_Changes_returns_200() throws Exception {
+        String customerLocation = (String) mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")))
+                .andReturn().getResponse().getHeaderValue("location");
+
+        assert customerLocation != null;
+        mockMvc.perform(MockMvcRequestBuilders.put(customerLocation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.updateCustomer(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("%s/revisions".formatted(customerLocation))
+                        .contentType(MediaType.APPLICATION_JSON)
+
+                ).andExpectAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.[0].revision").exists()
+                )
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
+
+    @Test
+    void Customer_revisions_With_Changes_returns_200() throws Exception {
+        String customerLocation = (String) mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.createCustomerWithAddress(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isCreated())
+                .andDo(result -> log.info("result: {}", result.getResponse().getHeaderValue("location")))
+                .andReturn().getResponse().getHeaderValue("location");
+
+        assert customerLocation != null;
+        mockMvc.perform(MockMvcRequestBuilders.put(customerLocation)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CustomerFixture.updateCustomer(objectMapper))
+
+                ).andExpectAll(MockMvcResultMatchers.status().isOk())
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("%s/revisions?fetch=true".formatted(customerLocation))
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andExpectAll(
+                        MockMvcResultMatchers.status().isOk(),
+                        MockMvcResultMatchers.jsonPath("$.[0].revisionType").exists(),
+                        MockMvcResultMatchers.jsonPath("$.[0].revision").exists()
+                )
+                .andDo(result -> log.info("result: {}", result.getResponse().getContentAsString()));
+    }
+
 }

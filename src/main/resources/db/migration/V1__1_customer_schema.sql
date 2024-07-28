@@ -4,5 +4,9 @@ CREATE TABLE customers
     first_name    VARCHAR(100),
     last_name     VARCHAR(100),
     email_address VARCHAR(255),
+    created_by    VARCHAR(255),
+    updated_by    VARCHAR(255),
+    created_on    TIMESTAMP WITHOUT TIME ZONE,
+    updated_on    TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_customers PRIMARY KEY (id)
 );

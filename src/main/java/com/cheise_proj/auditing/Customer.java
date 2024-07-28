@@ -4,7 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +26,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @ToString
 @Builder
+@EntityListeners(AuditingEntityListener.class)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED, withModifiedFlag = true)
+@AuditTable(value = "customers_audit")
 class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +47,22 @@ class Customer {
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses;
+
+    @Column(name = "created_by")
+    @CreatedBy
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    @LastModifiedBy
+    private String updatedBy;
+
+    @Column(name = "created_on")
+    @CreatedDate
+    private Date createdOn;
+
+    @Column(name = "updated_on")
+    @LastModifiedDate
+    private Date updatedOn;
 
     static Customer of(CustomerDto.CreateCustomer customer) {
         return Customer.builder()

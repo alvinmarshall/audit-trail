@@ -3,3 +3,16 @@ spring:
     name: auditing
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: validate
+      id:
+        new_generator_mappings: false
+    properties:
+      hibernate:
+        envers:
+          audit_table_suffix: _AUDIT
+
+
+
+
+
